@@ -1,0 +1,138 @@
+'use strict';
+
+console.log('STUDENT SCORE ARRAY ANALYZER');
+
+// Store the original names and final scores.
+const studentNames = ['Ana', 'Ben', 'Carla', 'Daniel', 'Ella'];
+const studentScores = [85, 72, 91, 64, 78];
+
+// Store three activity scores for each original student.
+const activityScores = [
+  [80, 85, 90],
+  [70, 72, 74],
+  [88, 92, 95],
+  [60, 65, 67],
+  [75, 78, 81]
+];
+
+// Preserve the original names for the activity matrix.
+const originalNames = Array.from(studentNames);
+
+console.log('\nPART A: ORIGINAL RECORDS');
+
+// Display each original student and score using their shared array index.
+for (let i = 0; i < studentNames.length; i++) {
+  console.log(`${i} - ${studentNames[i]}: ${studentScores[i]}`);
+}
+
+console.log('\nPART B: ADD NEW STUDENTS');
+
+// Add Faith at the end and Aaron at the beginning of both arrays.
+studentNames.push('Faith');
+studentScores.push(88);
+studentNames.unshift('Aaron');
+studentScores.unshift(76);
+
+console.log(`Updated Names: [${studentNames.join(', ')}]`);
+console.log(`Updated Scores: [${studentScores.join(', ')}]`);
+console.log(`Number of Students: ${studentNames.length}`);
+
+console.log('\nPART C: REMOVE AND REPLACE RECORDS');
+
+// Remove the first and last student while keeping both arrays synchronized.
+studentNames.shift();
+studentScores.shift();
+studentNames.pop();
+studentScores.pop();
+
+// Find and remove Daniel from both arrays.
+const danielIndex = studentNames.indexOf('Daniel');
+if (danielIndex !== -1) {
+  studentNames.splice(danielIndex, 1);
+  studentScores.splice(danielIndex, 1);
+}
+
+// Insert Grace and her score at index 2.
+studentNames.splice(2, 0, 'Grace');
+studentScores.splice(2, 0, 82);
+
+console.log(`Names: [${studentNames.join(', ')}]`);
+console.log(`Scores: [${studentScores.join(', ')}]`);
+
+console.log('\nPART D: CLASS STATISTICS');
+
+// Calculate the total score and identify the highest and lowest scores.
+let totalScore = 0;
+let highestScore = studentScores[0];
+let lowestScore = studentScores[0];
+
+for (let i = 0; i < studentScores.length; i++) {
+  const score = studentScores[i];
+  totalScore += score;
+
+  if (score > highestScore) {
+    highestScore = score;
+  }
+
+  if (score < lowestScore) {
+    lowestScore = score;
+  }
+}
+
+const averageScore = totalScore / studentScores.length;
+console.log(`Total Score: ${totalScore}`);
+console.log(`Average Score: ${averageScore.toFixed(2)}`);
+console.log(`Highest Score: ${highestScore}`);
+console.log(`Lowest Score: ${lowestScore}`);
+
+console.log('\nPART E: PASSING-SCORE ANALYSIS');
+
+// Use array iterator methods to analyze scores against the passing mark.
+const passingScore = 75;
+const passingScores = studentScores.filter(score => score >= passingScore);
+const statuses = studentScores.map(score =>
+  score >= passingScore ? 'Passed' : 'Failed'
+);
+const atLeastOneFailed = studentScores.some(score => score < passingScore);
+const allStudentsPassed = studentScores.every(score => score >= passingScore);
+
+console.log(`Passing Scores: [${passingScores.join(', ')}]`);
+console.log(`Statuses: [${statuses.join(', ')}]`);
+console.log(`At Least One Failed: ${atLeastOneFailed}`);
+console.log(`All Students Passed: ${allStudentsPassed}`);
+
+console.log('\nPART F: SORT AND SEARCH');
+
+// Sort a copy so each original name remains paired with its score.
+const sortedScores = Array.from(studentScores);
+sortedScores.sort((a, b) => b - a);
+const contains91 = studentScores.includes(91);
+const indexOf91 = studentScores.indexOf(91);
+
+console.log(`Scores from Highest to Lowest: [${sortedScores.join(', ')}]`);
+console.log(`Contains 91: ${contains91}`);
+console.log(`Index of 91: ${indexOf91}`);
+
+console.log('\nPART G: TWO-DIMENSIONAL ARRAY');
+
+// Calculate each original student's average from the activity score matrix.
+const activityAverages = [];
+
+for (let row = 0; row < activityScores.length; row++) {
+  let rowTotal = 0;
+
+  for (let column = 0; column < activityScores[row].length; column++) {
+    rowTotal += activityScores[row][column];
+  }
+
+  const rowAverage = rowTotal / activityScores[row].length;
+  activityAverages.push(rowAverage);
+  console.log(`${originalNames[row]}'s activity average: ${rowAverage.toFixed(2)}`);
+}
+
+console.log(`Activity Averages: [${activityAverages.map(avg => avg.toFixed(2)).join(', ')}]`);
+
+console.log('\nPART H: TEXT SUMMARY');
+
+// Summarize the current student names on one line.
+console.log(`Students: ${studentNames.join(' | ')}`);
