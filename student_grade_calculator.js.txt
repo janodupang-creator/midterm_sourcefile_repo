@@ -1,0 +1,83 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+function ask(question) {
+  return new Promise((resolve) => rl.question(question, resolve));
+}
+
+function getGrade(score) {
+  if (score >= 90) return 'Excellent';
+  if (score >= 80) return 'Very Good';
+  if (score >= 75) return 'Good';
+  return 'Failed';
+}
+
+function getValidNumber(input, min, max = Infinity) {
+  const value = Number(input);
+  return Number.isFinite(value) && value >= min && value <= max ? value : null;
+}
+
+async function main() {
+  let studentCount;
+  while (studentCount === undefined) {
+    const input = await ask('Enter the number of students: ');
+    const value = getValidNumber(input, 1);
+    if (value !== null && Number.isInteger(value)) {
+      studentCount = value;
+    } else {
+      console.log('Please enter a positive whole number.');
+    }
+  }
+
+  const scores = [];
+  for (let i = 0; i < studentCount; i += 1) {
+    while (scores[i] === undefined) {
+      const input = await ask(`Enter score for student ${i + 1} (0-100): `);
+      const score = getValidNumber(input, 0, 100);
+      if (score !== null) {
+        scores.push(score);
+      } else {
+        console.log('Please enter a score from 0 to 100.');
+      }
+    }
+  }
+
+  const total = scores.reduce((sum, score) => sum + score, 0);
+  const highest = Math.max(...scores);
+  const lowest = Math.min(...scores);
+  const passed = scores.filter((score) => score >= 75).length;
+
+  console.log('\nStudent Scores and Results');
+  console.log('--------------------------');
+  console.log(`${'Student'.padEnd(12)}${'Score'.padEnd(10)}${'Grade'.padEnd(14)}Result`);
+
+  scores.forEach((score, index) => {
+    const result = score >= 75 ? 'Passed' : 'Failed';
+    console.log(
+      `${`Student ${index + 1}`.padEnd(12)}${score.toFixed(2).padEnd(10)}` +
+      `${getGrade(score).padEnd(14)}${result}`,
+    );
+  });
+
+  console.log('\nClass Summary');
+  console.log('-------------');
+  console.log(`Total score: ${total.toFixed(2)}`);
+  console.log(`Average score: ${(total / studentCount).toFixed(2)}`);
+  console.log(`Highest score: ${highest.toFixed(2)}`);
+  console.log(`Lowest score: ${lowest.toFixed(2)}`);
+  console.log(`Students passed: ${passed}`);
+  console.log(`Students failed: ${studentCount - passed}`);
+
+  rl.close();
+}
+
+main().catch((error) => {
+  console.error('An error occurred:', error.message);
+  rl.close();
+  process.exitCode = 1;
+});
+
